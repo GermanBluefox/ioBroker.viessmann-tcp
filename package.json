@@ -1,0 +1,96 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+        "spec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+        "type": "remote"
+      },
+      "C:\\ioBroker\\node_modules\\iobroker"
+    ],
+    [
+      {
+        "raw": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+        "scope": null,
+        "escapedName": null,
+        "name": null,
+        "rawSpec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+        "spec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+        "type": "remote"
+      },
+      "C:\\ioBroker\\node_modules\\iobroker"
+    ]
+  ],
+  "_from": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+  "_id": "iobroker.viessmann-telnet@0.1.0",
+  "_inBundle": false,
+  "_inCache": true,
+  "_integrity": "sha1-7atNw6Iytb9hgdnXVZWwlnLqVKY=",
+  "_location": "/iobroker.viessmann-telnet",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "remote",
+    "raw": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+    "rawSpec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+    "saveSpec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+    "fetchSpec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master"
+  },
+  "_requiredBy": [
+    "#USER"
+  ],
+  "_resolved": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+  "_shasum": "318243991d0d762574d249faafa02a823af7ffe3",
+  "_shrinkwrap": null,
+  "_spec": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/tarball/master",
+  "_where": "C:\\ioBroker\\node_modules\\iobroker",
+  "author": {
+    "name": "bjoern3003",
+    "email": "bjoern3003@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "bjoern3003",
+      "email": "bjoern3003@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "iconv-lite": "^0.4.13",
+    "xml2js": "^0.4.17"
+  },
+  "deprecated": false,
+  "description": "ioBroker viessmann-telnet Adapter",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-http": "^2.2.0",
+    "grunt-jscs": "^3.0.1",
+    "grunt-replace": "^1.0.1",
+    "mocha": "^3.5.3"
+  },
+  "homepage": "https://github.com/Bjoern3003/ioBroker.viessmann-telnet",
+  "keywords": [
+    "ioBroker",
+    "viessmann"
+  ],
+  "license": "MIT",
+  "main": "main.js",
+  "name": "iobroker.viessmann-telnet",
+  "optionalDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bjoern3003/ioBroker.viessmann-telnet.git"
+  },
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha"
+  },
+  "version": "0.1.0"
+}

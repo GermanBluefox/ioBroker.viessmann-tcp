@@ -1,0 +1,38 @@
+{
+    "common": {
+        "name":                     "viessmann-tcp",
+        "version":                  "0.1.0",
+        "title":                    "Viessmann connection for ioBroker over TCP",
+        "desc":                     {
+           "en": "FHEM Adapter",
+           "de": "FHEM Adapter",
+           "ru": "FHEM драйвер"
+	    },
+        "news": {
+          "0.1.0" :{
+            "en": "initial checkin",
+            "de": "initial checkin",
+            "ru": "initial checkin"
+          }
+        },
+        "platform":                 "Javascript/Node.js",
+        "mode":                     "daemon",
+        "icon":                     "viessmann-tcp.png",
+        "enabled":                  true,
+	    "extIcon":                  "https://github.com/Bjoern3003/ioBroker.viessmann-tcp/blob/master/admin/viessmann-tcp.png",
+	    "keywords":                 ["VIESSMANN"],
+        "readme":                   "https://github.com/Bjoern3003/ioBroker.viessmann-tcp/blob/master/README.md",
+	    "loglevel":                 "info",
+        "type":                     "climate-control",
+	"authors": [
+            "bjoern3003 <bjoern3003@gmail.com>"
+        ]
+    },
+    "native": {
+      "port":                 8888,
+      "host":                 "127.0.0.1",
+      "reconnectTimeout":     30000
+    },
+    "objects": [],
+    "instanceObjects": []
+}

@@ -1,0 +1,1 @@
+# ioBroker.viessmann-telnet
