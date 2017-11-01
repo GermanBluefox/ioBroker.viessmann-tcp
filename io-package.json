@@ -19,10 +19,10 @@
         "mode":                     "daemon",
         "icon":                     "viessmann-tcp.png",
         "enabled":                  true,
-	    "extIcon":                  "https://github.com/Bjoern3003/ioBroker.viessmann-tcp/blob/master/admin/viessmann-tcp.png",
+	    "extIcon":                  "https://github.com/Bjoern3003/ioBroker.viessmann-tcp/raw/master/admin/viessmann-tcp.png",
 	    "keywords":                 ["VIESSMANN"],
         "readme":                   "https://github.com/Bjoern3003/ioBroker.viessmann-tcp/blob/master/README.md",
-	    "loglevel":                 "info",
+	    "loglevel":                 "debug",
         "type":                     "climate-control",
 	"authors": [
             "bjoern3003 <bjoern3003@gmail.com>"
