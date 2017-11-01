@@ -1,6 +1,6 @@
 systemDictionary = {
-    "Viessmann Telnet adapter settings":{"en": "Viessmann Telnet Adapter Settings", "de": "Viessmann Telnet Adapter Einstellungen"},
-    "Viessmann Telnet IP:":      {"en": "Viessmann Telnet IP:", "de": "Viessmann Telnet IP:"},
-    "Viessmann Telnet Port:":    {"en": "Viessmann Telnet Port:", "de": "Viessmann Telnet Port:"}
-    "Viessmann Telnet Update:":    {"en": "Viessmann Telnet Update:", "de": "Viessmann Telnet Update:"}
+    "Viessmann TCP adapter settings":{"en": "Viessmann TCP Adapter Settings", "de": "Viessmann TCP Adapter Einstellungen"},
+    "Viessmann IP:":      {"en": "Viessmann IP:", "de": "Viessmann IP:"},
+    "Viessmann Port:":    {"en": "Viessmann Port:", "de": "Viessmann Port:"}
+    "Viessmann Update:":    {"en": "Viessmann Update:", "de": "Viessmann Update:"}
 };
