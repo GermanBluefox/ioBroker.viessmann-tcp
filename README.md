@@ -1,1 +1,1 @@
-# ioBroker.viessmann-telnet
+# ioBroker.viessmann-tcp
