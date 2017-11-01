@@ -2,7 +2,7 @@
     "common": {
         "name":                     "viessmann-tcp",
         "version":                  "0.1.0",
-        "title":                    "Viessmann connection for ioBroker over TCP",
+        "title":                    "Viessmann TCP Connect (eg. ESP8266)",
         "desc":                     {
            "en": "FHEM Adapter",
            "de": "FHEM Adapter",
