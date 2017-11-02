@@ -63,8 +63,7 @@
   ],
   "dependencies": {
     "iconv-lite": "^0.4.13",
-    "xml2js": "^0.4.17",
-    "sleep": "^5.1.1"
+    "xml2js": "^0.4.17"
   },
   "deprecated": false,
   "description": "ioBroker viessmann-tcp Adapter",

@@ -7,7 +7,6 @@
 var utils = require(__dirname + '/lib/utils');
 var xml2js = require('xml2js');
 var net = require('net');
-var sleep = require('sleep');
 
 var adapter = utils.adapter('viessmann-tcp');
 
