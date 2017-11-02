@@ -7,6 +7,7 @@
 var utils = require(__dirname + '/lib/utils');
 var xml2js = require('xml2js');
 var net = require('net');
+var sleep = require('sleep');
 
 var adapter = utils.adapter('viessmann-tcp');
 
@@ -14,10 +15,10 @@ var client = new net.Socket();
 var ESPConnected = false;
 var ViessmannConnected = false;
 var WifiBusy = false;
-var oLastRequest = {};
 var receiveAnswer = false;
 var oVito = null;
 var parser = new xml2js.Parser(), fs = require('fs');
+var BusyInterval;
 
 // Datei einlesen
 fs.readFile(__dirname + '/vito.xml', function (err, data) {
@@ -78,13 +79,28 @@ function calculateChecksum(v)
 		nChecksum = nChecksum + dec;
 	}
 	
-	return nChecksum.toString(16);;
+	return nChecksum.toString(16);
 }
 
 function loop()
 {
-	if (ESPConnected && ViessmannConnected && !WifiBusy) {
-		getValue('getTempA');
+	var commandCnt  = oVito.commands[0].command.length;
+	var y			= 0;
+	
+	if (ESPConnected && ViessmannConnected)
+	{
+		while (y <= commandCnt)
+		{
+			if(!WifiBusy)
+			{
+				if(oVito.commands[0].command[y].$['protocmd'] == 'getaddr')
+				{
+					WifiBusy = true;
+					getValue(oVito.commands[0].command[y].$['name']);
+				}
+			}
+			sleep.msleep(100);
+		}
 	}
 }
 
@@ -101,6 +117,19 @@ function getUnitFromObject(unit)
 	return false;
 }
 
+function getCommandFromObject(addr)
+{
+	for (var x in oVito.commands[0].commands)
+	{
+		if(addr == oVito.commands[0].commands[x].addr[0])
+		{
+			return oVito.commands[0].commands[x];
+		}
+	}
+	
+	return false;
+}
+
 function getValue(name)
 {
 	for (var z in oVito.commands[0].command)
@@ -110,8 +139,6 @@ function getValue(name)
 			var addr = oVito.commands[0].command[z].addr[0];
 			var len  = oVito.commands[0].command[z].len[0];
 			adapter.log.debug('Try to get Value from Adress ' + addr + ' (' + name + ')');
-			
-			oLastRequest = oVito.commands[0].command[z];
 			
 			var v   = "41050001" + addr + "0" + len;
 			
@@ -136,7 +163,6 @@ function sendRequest(data)
 			if(WifiBusy)
 			{
 				WifiBusy = false;
-				oLastRequest = {};
 				adapter.log.debug('Reset WifiBusy, because there are no Data incoming');
 			}
 		}, 1000);
@@ -145,43 +171,66 @@ function sendRequest(data)
 
 function handleAnswer(answer)
 {
-	var bytelength = answer.charAt(12) + answer.charAt(13);
+	adapter.log.debug('Answer: ' + answer);
+	
+	var bytelength = parseInt(answer.charAt(12) + answer.charAt(13));
+	
+	adapter.log.debug('Bytelength: ' + bytelength);
 	if(bytelength > 0)
 	{
-		var valueHex = '';
-		for(var i=14;i<14+(bytelength*2);i++)
+		var oRequest = getCommandFromObject(answer.charAt(8) + answer.charAt(9) + answer.charAt(10) + answer.charAt(11));
+		adapter.log.debug('oRequest: ' + JSON.stringify(oRequest));
+		if(oRequest !== false)
 		{
-			valueHex = valueHex + answer.charAt(i);
-		}
-		
-		var unit = getUnitFromObject(oLastRequest.unit[0]);		
-		var get  = unit.calc[0].$['get'];
-		var valueDec = eval(new String(get.replace("V", parseInt(valueHex.charAt(0)+valueHex.charAt(1), 16))).toString());
-		
-		adapter.getObject(adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0], function (err, obj) {
-			if (!obj) {
-				adapter.log.debug('Create new Object ' + adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0] + ', because not found in ioBroker.');
-				var object = {
-					_id: adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0],
-					common: {
-						name: oLastRequest.description[0],
-						role: oLastRequest.$['protocmd'],
-						type: 'number'
-					},
-					native: {},
-					type: 'state'
-				};
-
-				adapter.setObject(oLastRequest.$['name'] + '_' + oLastRequest.addr[0], object, function (err, obj) {
-					adapter.setState(oLastRequest.$['name'] + '_' + oLastRequest.addr[0], {val: valueDec, ack: true});
-				});
+			var valueHex = '';
+			for(var i=14;i<14+(bytelength*2);i++)
+			{
+				valueHex = valueHex + answer.charAt(i);
+			}
+			
+			var unit = getUnitFromObject(oRequest.unit[0]);		
+			
+			if(!unit)
+			{
+				adapter.log.error('Unit "' + oRequest.unit[0] + '" not found.');
+				return false;
+			}
+			
+			if(!unit.calc)
+			{
+				var valueDec = parseInt(valueHex.charAt(0)+valueHex.charAt(1), 16);
 			}
 			else
 			{
-				adapter.log.debug(adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0] + ' Object found, set Value to ' + valueDec);
-				adapter.setState(oLastRequest.$['name'] + '_' + oLastRequest.addr[0], {val: valueDec, ack: true});
+				var get  = unit.calc[0].$['get'];
+				var valueDec = eval(new String(get.replace("V", parseInt(valueHex.charAt(0)+valueHex.charAt(1), 16))).toString());
 			}
-		});
+			
+			adapter.getObject(adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0], function (err, obj) {
+				if (!obj) {
+					adapter.log.debug('Create new Object ' + adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0] + ', because not found in ioBroker.');
+					var object = {
+						_id: adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0],
+						common: {
+							name: oRequest.description[0],
+							role: oRequest.$['protocmd'],
+							type: 'number'
+						},
+						native: {},
+						type: 'state'
+					};
+
+					adapter.setObject(oRequest.$['name'] + '_' + oRequest.addr[0], object, function (err, obj) {
+						adapter.setState(oRequest.$['name'] + '_' + oRequest.addr[0], {val: valueDec, ack: true});
+					});
+				}
+				else
+				{
+					adapter.log.debug(adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0] + ' Object found, set Value to ' + valueDec);
+					adapter.setState(oRequest.$['name'] + '_' + oRequest.addr[0], {val: valueDec, ack: true});
+				}
+			});
+		}
 	}
 }
 

@@ -29,7 +29,7 @@
   "_id": "iobroker.viessmann-tcp@0.1.0",
   "_inBundle": false,
   "_inCache": true,
-  "_integrity": "sha1-7atNw6Iytb9hgdnXVZWwlnLqVKY=",
+  "_integrity": "sha1-wgogTkCFXlgv374p1ZbN/tzxpIY=",
   "_location": "/iobroker.viessmann-tcp",
   "_phantomChildren": {},
   "_requested": {
@@ -64,6 +64,7 @@
   "dependencies": {
     "iconv-lite": "^0.4.13",
     "xml2js": "^0.4.17"
+    "sleep": "^5.1.1"
   },
   "deprecated": false,
   "description": "ioBroker viessmann-tcp Adapter",
