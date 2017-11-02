@@ -14,9 +14,8 @@ var client = new net.Socket();
 var ESPConnected = false;
 var ViessmannConnected = false;
 var WifiBusy = false;
-var lastRequest = null;
+var oLastRequest = {};
 var receiveAnswer = false;
-var answer = null;
 var oVito = null;
 var parser = new xml2js.Parser(), fs = require('fs');
 
@@ -70,28 +69,57 @@ adapter.on('ready', function () {
     main();
 });
 
+function calculateChecksum(v)
+{
+	var nChecksum = 0;
+	for(var i=2;i<v.length;i=i+2)
+	{
+		var dec = parseInt(v.charAt(i)+v.charAt(i+1), 16);
+		nChecksum = nChecksum + dec;
+	}
+	
+	return nChecksum.toString(16);;
+}
+
 function loop()
 {
 	if (ESPConnected && ViessmannConnected && !WifiBusy) {
-		//sendRequest('4105000155250282');
 		getValue('getTempA');
 	}
 }
+
+function getUnitFromObject(unit)
+{
+	for (var z in oVito.units[0].unit)
+	{
+		if(unit == oVito.units[0].unit[z]['abbrev'][0])
+		{
+			return oVito.units[0].unit[z];
+		}
+	}
+	
+	return false;
+}
+
 function getValue(name)
 {
 	for (var z in oVito.commands[0].command)
 	{
 		if(name == oVito.commands[0].command[z].$['name'] && oVito.commands[0].command[z].$['protocmd'] == 'getaddr')
 		{
-			var addr = oVito.commands[0].command[0].addr[0];
-			var len  = oVito.commands[0].command[0].len[0];
+			var addr = oVito.commands[0].command[z].addr[0];
+			var len  = oVito.commands[0].command[z].len[0];
 			adapter.log.debug('Try to get Value from Adress ' + addr + ' (' + name + ')');
 			
-			var hex  = "41050001" + addr + "0" + len + "82";
+			oLastRequest = oVito.commands[0].command[z];
+			
+			var v   = "41050001" + addr + "0" + len;
+			
+			var hex =  v + calculateChecksum(v);
+	
+			sendRequest(hex);
 		}
 	}
-	
-	sendRequest(hex);
 }
 
 function sendRequest(data)
@@ -99,11 +127,8 @@ function sendRequest(data)
 	if(data.length > 0)
 	{
 		var buf = Buffer.from(data, 'hex');
-				
-        //adapter.log.debug('Request: '+ data + ' buf: ' + buf);
 		
 		WifiBusy = true;
-		lastRequest = buf;
 		client.write( buf );
 		
 		setTimeout(function() {
@@ -111,26 +136,52 @@ function sendRequest(data)
 			if(WifiBusy)
 			{
 				WifiBusy = false;
+				oLastRequest = {};
 				adapter.log.debug('Reset WifiBusy, because there are no Data incoming');
 			}
 		}, 1000);
 	}
 }
 
-function handleAnswer()
+function handleAnswer(answer)
 {
-	adapter.log.debug('Antwort: ' + answer);
-	
 	var bytelength = answer.charAt(12) + answer.charAt(13);
 	if(bytelength > 0)
 	{
-		var value = '';
+		var valueHex = '';
 		for(var i=14;i<14+(bytelength*2);i++)
 		{
-			value = value + answer.charAt(i);
+			valueHex = valueHex + answer.charAt(i);
 		}
-		adapter.log.debug('Value: ' + value);
-		adapter.log.debug('Value: ' + parseInt(value.charAt(0)+value.charAt(1), 16) / 10);
+		
+		var unit = getUnitFromObject(oLastRequest.unit[0]);		
+		var get  = unit.calc[0].$['get'];
+		var valueDec = eval(new String(get.replace("V", parseInt(valueHex.charAt(0)+valueHex.charAt(1), 16))).toString());
+		
+		adapter.getObject(adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0], function (err, obj) {
+			if (!obj) {
+				adapter.log.debug('Create new Object ' + adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0] + ', because not found in ioBroker.');
+				var object = {
+					_id: adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0],
+					common: {
+						name: oLastRequest.description[0],
+						role: oLastRequest.$['protocmd'],
+						type: 'number'
+					},
+					native: {},
+					type: 'state'
+				};
+
+				adapter.setObject(oLastRequest.$['name'] + '_' + oLastRequest.addr[0], object, function (err, obj) {
+					adapter.setState(oLastRequest.$['name'] + '_' + oLastRequest.addr[0], {val: valueDec, ack: true});
+				});
+			}
+			else
+			{
+				adapter.log.debug(adapter.namespace + '.' + oLastRequest.$['name'] + '_' + oLastRequest.addr[0] + ' Object found, set Value to ' + valueDec);
+				adapter.setState(oLastRequest.$['name'] + '_' + oLastRequest.addr[0], {val: valueDec, ack: true});
+			}
+		});
 	}
 }
 
@@ -158,12 +209,10 @@ function main() {
 	client.on('data', function (data) {
 		if (ESPConnected) {
 			if(receiveAnswer)
-			{
-				answer = Buffer.from(data).toString('hex');
-				
-				handleAnswer();
+			{				
+				handleAnswer(Buffer.from(data).toString('hex'));
 				receiveAnswer = false;
-				WifiBusy = false;				
+				WifiBusy = false;
 			}
 			if(data == '\x05') // initialer Aufruf
 			{
