@@ -96,9 +96,10 @@ function loop()
 				{
 					WifiBusy = true;
 					getValue(oVito.commands[0].command[y].$['name']);
+					y++;
+					
 				}
 			}
-			sleep.msleep(100);
 		}
 	}
 }
