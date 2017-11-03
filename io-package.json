@@ -1,7 +1,7 @@
 {
     "common": {
         "name":                     "viessmann-tcp",
-        "version":                  "0.1.0",
+        "version":                  "0.2.0",
         "title":                    "Viessmann TCP Connect (eg. ESP8266)",
         "desc":                     {
            "en": "FHEM Adapter",
@@ -11,8 +11,11 @@
         "news": {
           "0.1.0" :{
             "en": "initial checkin",
-            "de": "initial checkin",
-            "ru": "initial checkin"
+            "de": "Initiale Installation"
+          },
+		  "0.2.0" :{
+            "en": "First working Version",
+            "de": "Erste funktionierende Version"
           }
         },
         "platform":                 "Javascript/Node.js",

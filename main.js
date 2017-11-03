@@ -7,17 +7,13 @@
 var utils = require(__dirname + '/lib/utils');
 var xml2js = require('xml2js');
 var net = require('net');
+var command = require(__dirname + '/lib/command');
+var unit = require(__dirname + '/lib/unit');
+var parser = new xml2js.Parser(), fs = require('fs');
+var oVito = null;
+var fUnit = null;
 
 var adapter = utils.adapter('viessmann-tcp');
-
-var client = new net.Socket();
-var ESPConnected = false;
-var ViessmannConnected = false;
-var WifiBusy = false;
-var receiveAnswer = false;
-var oVito = null;
-var parser = new xml2js.Parser(), fs = require('fs');
-var BusyInterval;
 
 // Datei einlesen
 fs.readFile(__dirname + '/vito.xml', function (err, data) {
@@ -30,7 +26,7 @@ fs.readFile(__dirname + '/vito.xml', function (err, data) {
 adapter.on('unload', function (callback) {
     try {
         adapter.setState('info.connection', false, true);
-        if (ViessmannConnected) {
+        if (main.ViessmannConnected) {
 			client.close();
         }
         callback();
@@ -43,7 +39,7 @@ adapter.on('unload', function (callback) {
 adapter.on('stateChange', function (id, state) {
     // you can use the ack flag to detect if it is status (true) or command (false)
     if (state && !state.ack) {
-        if (!ESPConnected) {
+        if (!main.ESPConnected) {
             adapter.log.warn('Cannot send command to "' + id + '", because not connected');
             return;
         }
@@ -66,240 +62,215 @@ adapter.on('message', function (obj) {
 // is called when databases are connected and adapter received configuration.
 // start here!
 adapter.on('ready', function () {	
-    main();
+    main.main();
 });
 
-function calculateChecksum(v)
-{
-	var nChecksum = 0;
-	for(var i=2;i<v.length;i=i+2)
-	{
-		var dec = parseInt(v.charAt(i)+v.charAt(i+1), 16);
-		nChecksum = nChecksum + dec;
-	}
-	
-	return nChecksum.toString(16);
-}
+var main = { 
 
-function loop()
-{
-	var commandCnt  = oVito.commands[0].command.length;
-	var y			= 0;
-	
-	if (ESPConnected && ViessmannConnected)
+	client: 			new net.Socket(),
+	ESPConnected: 		false,
+	ViessmannInit:		false,
+	ViessmannConnected: false,
+	receiveAnswer:		false,
+	commandArr: [],
+	commandAssoc: [],
+	idx: 0,
+
+	calculateChecksum: function(v)
 	{
-		while (y <= commandCnt)
+		var nChecksum = 0;
+		for(var i=2;i<v.length;i=i+2)
 		{
-			if(!WifiBusy)
+			var dec = parseInt(v.charAt(i)+v.charAt(i+1), 16);
+			nChecksum = nChecksum + dec;
+		}
+		
+		return nChecksum.toString(16);
+	},
+
+	loop: function()
+	{
+		if (main.ESPConnected && main.ViessmannConnected && main.commandAssoc.length > 0)
+		{				
+			var cidx = main.commandAssoc[main.idx];
+			if(cidx.length > 0)
 			{
-				if(oVito.commands[0].command[y].$['protocmd'] == 'getaddr')
+				// get Data from Viessmann
+				if(main.commandArr[ cidx.toUpperCase() ].xmlObj.$['protocmd'] == 'getaddr')
 				{
-					WifiBusy = true;
-					getValue(oVito.commands[0].command[y].$['name']);
-					y++;
+					adapter.log.debug('Address: ' + cidx.toUpperCase() + ' Try to get Value ' + main.commandArr[ cidx.toUpperCase() ].xmlObj.$['name']);
 					
+					var v   = "41050001" + main.commandArr[ cidx.toUpperCase() ].xmlObj.addr[0] + "0" + main.commandArr[ cidx.toUpperCase() ].xmlObj.len[0];						
+					var hex =  v + main.calculateChecksum(v);
+			
+					main.sendRequest(hex);
+					main.idx++;
 				}
+				// Maybe many more eg. setaddr?
+				
 			}
 		}
-	}
-}
-
-function getUnitFromObject(unit)
-{
-	for (var z in oVito.units[0].unit)
-	{
-		if(unit == oVito.units[0].unit[z]['abbrev'][0])
-		{
-			return oVito.units[0].unit[z];
-		}
-	}
+	},
 	
-	return false;
-}
-
-function getCommandFromObject(addr)
-{
-	for (var x in oVito.commands[0].commands)
+	setState: function(cmd)
 	{
-		if(addr == oVito.commands[0].commands[x].addr[0])
-		{
-			return oVito.commands[0].commands[x];
-		}
-	}
-	
-	return false;
-}
+		adapter.getObject(adapter.namespace + '.' + cmd.xmlObj.$['name'] + '_' + cmd.xmlObj.addr[0], function (err, obj) {
+			if (!obj) {
+				adapter.log.debug('Create new Object ' + adapter.namespace + '.' + cmd.xmlObj.$['name'] + '_' + cmd.xmlObj.addr[0] + ', because not found in ioBroker.');
+				var object = {
+					_id: adapter.namespace + '.' + cmd.xmlObj.$['name'] + '_' + cmd.xmlObj.addr[0],
+					common: {
+						name: cmd.xmlObj.description[0],
+						role: cmd.xmlObj.$['protocmd'],
+						type: 'number'
+					},
+					native: {},
+					type: 'state'
+				};
 
-function getValue(name)
-{
-	for (var z in oVito.commands[0].command)
-	{
-		if(name == oVito.commands[0].command[z].$['name'] && oVito.commands[0].command[z].$['protocmd'] == 'getaddr')
-		{
-			var addr = oVito.commands[0].command[z].addr[0];
-			var len  = oVito.commands[0].command[z].len[0];
-			adapter.log.debug('Try to get Value from Adress ' + addr + ' (' + name + ')');
-			
-			var v   = "41050001" + addr + "0" + len;
-			
-			var hex =  v + calculateChecksum(v);
-	
-			sendRequest(hex);
-		}
-	}
-}
-
-function sendRequest(data)
-{
-	if(data.length > 0)
-	{
-		var buf = Buffer.from(data, 'hex');
-		
-		WifiBusy = true;
-		client.write( buf );
-		
-		setTimeout(function() {
-			//Reset WifiBusy, if there where no data incoming
-			if(WifiBusy)
-			{
-				WifiBusy = false;
-				adapter.log.debug('Reset WifiBusy, because there are no Data incoming');
-			}
-		}, 1000);
-	}
-}
-
-function handleAnswer(answer)
-{
-	adapter.log.debug('Answer: ' + answer);
-	
-	var bytelength = parseInt(answer.charAt(12) + answer.charAt(13));
-	
-	adapter.log.debug('Bytelength: ' + bytelength);
-	if(bytelength > 0)
-	{
-		var oRequest = getCommandFromObject(answer.charAt(8) + answer.charAt(9) + answer.charAt(10) + answer.charAt(11));
-		adapter.log.debug('oRequest: ' + JSON.stringify(oRequest));
-		if(oRequest !== false)
-		{
-			var valueHex = '';
-			for(var i=14;i<14+(bytelength*2);i++)
-			{
-				valueHex = valueHex + answer.charAt(i);
-			}
-			
-			var unit = getUnitFromObject(oRequest.unit[0]);		
-			
-			if(!unit)
-			{
-				adapter.log.error('Unit "' + oRequest.unit[0] + '" not found.');
-				return false;
-			}
-			
-			if(!unit.calc)
-			{
-				var valueDec = parseInt(valueHex.charAt(0)+valueHex.charAt(1), 16);
+				adapter.setObject(cmd.xmlObj.$['name'] + '_' + cmd.xmlObj.addr[0], object, function (err, obj) {
+					adapter.setState(cmd.xmlObj.$['name'] + '_' + cmd.xmlObj.addr[0], {val: cmd.value['Dec'], ack: true});
+				});
 			}
 			else
 			{
-				var get  = unit.calc[0].$['get'];
-				var valueDec = eval(new String(get.replace("V", parseInt(valueHex.charAt(0)+valueHex.charAt(1), 16))).toString());
+				adapter.log.debug('Address: ' + cmd.xmlObj.addr[0] + ' ' + adapter.namespace + '.' + cmd.xmlObj.$['name'] + '_' + cmd.xmlObj.addr[0] + ' Object found, set Value to ' + cmd.value['Dec']);
+				adapter.setState(cmd.xmlObj.$['name'] + '_' + cmd.xmlObj.addr[0], {val: cmd.value['Dec'], ack: true});
 			}
-			
-			adapter.getObject(adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0], function (err, obj) {
-				if (!obj) {
-					adapter.log.debug('Create new Object ' + adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0] + ', because not found in ioBroker.');
-					var object = {
-						_id: adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0],
-						common: {
-							name: oRequest.description[0],
-							role: oRequest.$['protocmd'],
-							type: 'number'
-						},
-						native: {},
-						type: 'state'
-					};
+		});
+	},
 
-					adapter.setObject(oRequest.$['name'] + '_' + oRequest.addr[0], object, function (err, obj) {
-						adapter.setState(oRequest.$['name'] + '_' + oRequest.addr[0], {val: valueDec, ack: true});
-					});
-				}
-				else
+	sendRequest: function(data)
+	{
+		if(data.length > 0)
+		{
+			var buf = Buffer.from(data, 'hex');
+			
+			main.client.write( buf );
+		}
+	},
+
+	main: function() {
+		adapter.config.host = adapter.config.host || '127.0.0.1';
+		adapter.config.port = parseInt(adapter.config.port, 10) || 8888;
+		adapter.config.refresh = parseInt(adapter.config.refresh, 10) || 60;
+		
+		fUnit = new unit({
+			oVito: oVito
+		});
+
+		adapter.log.debug('Try to connect to Viessmann at: ' + adapter.config.host + ':' + adapter.config.port);
+
+		// in this template all states changes inside the adapters namespace are subscribed
+		adapter.subscribeStates('*');
+		
+		main.client.connect(adapter.config.port, adapter.config.host, function() {
+			if (!main.ESPConnected) {
+				adapter.log.debug('Connected');
+				main.ESPConnected = true;
+				adapter.setState('info.connection', true, false);
+				
+				// Set Viessmann back to default Serial Connection
+				main.sendRequest('04');		
+			}
+		});
+		
+		main.client.on('data', function (data) {
+			if (main.ESPConnected) 
+			{
+				if(main.receiveAnswer)
 				{
-					adapter.log.debug(adapter.namespace + '.' + oRequest.$['name'] + '_' + oRequest.addr[0] + ' Object found, set Value to ' + valueDec);
-					adapter.setState(oRequest.$['name'] + '_' + oRequest.addr[0], {val: valueDec, ack: true});
+					main.receiveAnswer = false;
+					var answer = Buffer.from(data).toString('hex');
+					
+					var cmd = answer.charAt(8) + answer.charAt(9) + answer.charAt(10) + answer.charAt(11);
+					if(cmd.length > 0)
+					{
+						if(main.commandArr[ cmd.toUpperCase() ] !== undefined)
+						{
+							adapter.log.debug('Address: ' + cmd + ' Receive: ' + answer);
+								
+							main.commandArr[ cmd.toUpperCase() ].on('handleAnswerReady', function ()
+							{
+								adapter.log.debug('Address: ' + cmd + ' call handleAnswerReady');
+								
+								main.setState(main.commandArr[ cmd.toUpperCase() ]);
+								
+								adapter.log.debug(main.idx-1 + ' -  ' + main.commandAssoc.length);
+								if(main.idx >= main.commandAssoc.length)
+								{
+									main.idx = 0;
+									adapter.log.debug('Restart to get new values in ' + adapter.config.refresh + ' seconds.');
+									setTimeout(main.loop, adapter.config.refresh * 1000);
+								}
+								else
+								{
+									main.loop();				
+								}
+							});
+							
+							main.commandArr[ cmd.toUpperCase() ].handleAnswer(answer);
+						}
+						else
+						{
+							adapter.log.debug('Address: ' + cmd + ' Array not found.');
+							adapter.log.debug(JSON.stringify(main.commandArr));
+						}
+					}
+					else
+					{
+						adapter.log.debug('No Address found in answer: ' + answer);
+					}
 				}
-			});
-		}
+				if(data == '\x05') // initialer Aufruf
+				{
+					adapter.log.debug('Viessmann Serial Connect');
+					main.sendRequest('160000');
+					main.ViessmannInit = true;
+					
+					for (var c in oVito.commands[0].command)
+					{
+						main.commandArr[ oVito.commands[0].command[c].addr[0].toUpperCase() ] = new command({fUnit, adapter});
+						main.commandArr[ oVito.commands[0].command[c].addr[0].toUpperCase() ].init(oVito, oVito.commands[0].command[c].addr[0]);
+						main.commandAssoc.push(oVito.commands[0].command[c].addr[0].toUpperCase());
+					}
+				}
+				if(data == '\x06') // Anfrage ok
+				{
+					if(main.ViessmannInit && !main.ViessmannConnected)
+					{
+						main.ViessmannConnected = true;
+						main.loop();
+					}
+					main.receiveAnswer = true;
+				}
+				if(data == '\x15') // Fehler in der Anfrage
+				{
+					adapter.log.debug('Fehler in der Anfrage - Viessmann konnte Anfrage nicht verarbeiten.');
+				}
+			}
+		});
+		
+		main.client.on('error', function (data) {
+			adapter.log.debug('Fehler beim Verbindungsaufbau: ' + data);
+		});
+		
+		main.client.on('end', function () {
+			if (ESPConnected) {
+				adapter.log.debug('Disconnected');
+				main.connected = false;
+				adapter.setState('info.connection', false, true);
+			}
+		});
+		
+		main.client.on('close', function () {
+			if (ESPConnected) {
+				main.client.write('\x04');
+				adapter.log.debug('Disconnected');
+				main.ESPConnected = false;
+				main.ViessmannConnected = false;
+				adapter.setState('info.connection', false, true);
+			}
+		});
 	}
-}
-
-function main() {
-    adapter.config.host = adapter.config.host || '127.0.0.1';
-    adapter.config.port = parseInt(adapter.config.port, 10) || 8888;
-    adapter.config.refresh = parseInt(adapter.config.refresh, 10) || 60;
-
-    adapter.log.debug('Try to connect to Viessmann at: ' + adapter.config.host + ':' + adapter.config.port);
-
-    // in this template all states changes inside the adapters namespace are subscribed
-    adapter.subscribeStates('*');
-	
-	client.connect(adapter.config.port, adapter.config.host, function() {
-		if (!ESPConnected && !WifiBusy) {
-            adapter.log.debug('Connected');
-            ESPConnected = true;
-			adapter.setState('info.connection', true, false);
-			
-			// Set Viessmann back to default Serial Connection
-			sendRequest('04');		
-        }
-	});
-	
-	client.on('data', function (data) {
-		if (ESPConnected) {
-			if(receiveAnswer)
-			{				
-				handleAnswer(Buffer.from(data).toString('hex'));
-				receiveAnswer = false;
-				WifiBusy = false;
-			}
-			if(data == '\x05') // initialer Aufruf
-			{
-				adapter.log.debug('Viessmann Serial Connect');
-				sendRequest('160000');
-				ViessmannConnected = true;
-				setInterval(loop, adapter.config.refresh * 1000);
-			}
-			if(data == '\x06') // Anfrage ok
-			{
-				receiveAnswer = true;
-			}
-			if(data == '\x15') // Fehler in der Anfrage
-			{
-				adapter.log.debug('Fehler in der Anfrage - Viessmann konnte Anfrage nicht verarbeiten.');
-			}
-		}
-    });
-	
-    client.on('error', function (data) {
-        adapter.log.debug('Fehler beim Verbindungsaufbau: ' + data);
-    });
-	
-    client.on('end', function () {
-        if (ESPConnected) {
-            adapter.log.debug('Disconnected');
-            connected = false;
-            adapter.setState('info.connection', false, true);
-        }
-    });
-	
-    client.on('close', function () {
-        if (ESPConnected) {
-			client.write('\x04');
-            adapter.log.debug('Disconnected');
-            ESPConnected = false;
-			ViessmannConnected = false;
-            adapter.setState('info.connection', false, true);
-        }
-    });
 }

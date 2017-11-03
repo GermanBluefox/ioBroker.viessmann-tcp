@@ -34,7 +34,7 @@
 			<addr>0814</addr>
 			<len>2</len>
 			<unit>UT</unit>
-			<description>PRÜFEN:::Ermittle die Warmwassersolltemperatur in Grad C</description>
+			<description>Ermittle die Warmwassersolltemperatur in Grad C</description>
 		</command>
 		<command name='getTempWW' protocmd='getaddr'>
 			<addr>0812</addr>
@@ -47,7 +47,7 @@
 			<len>2</len>
 			<unit>UT</unit>
 			<error>05 05</error>
-			<description>PRÜFEN:::Ermittle die Kesselsolltemperatur in Grad C</description>
+			<description>Ermittle die Kesselsolltemperatur in Grad C</description>
 		</command>
 		<command name='getTempKist' protocmd='getaddr'>
 			<addr>0810</addr>
@@ -60,7 +60,7 @@
 			<addr>551E</addr>
 			<len>1</len>
 			<unit>RT</unit>
-			<description>PRÜFEN:::Ermittle den Brennerstatus</description>
+			<description>Ermittle den Brennerstatus</description>
 		</command>
 		<command name='getBrennerStarts' protocmd='getaddr'>
 			<addr>088A</addr>

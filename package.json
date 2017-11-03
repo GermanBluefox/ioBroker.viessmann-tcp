@@ -26,10 +26,10 @@
     ]
   ],
   "_from": "https://github.com/Bjoern3003/ioBroker.viessmann-tcp/tarball/master",
-  "_id": "iobroker.viessmann-tcp@0.1.0",
+  "_id": "iobroker.viessmann-tcp@0.2.0",
   "_inBundle": false,
   "_inCache": true,
-  "_integrity": "sha1-wgogTkCFXlgv374p1ZbN/tzxpIY=",
+  "_integrity": "sha1-ei0eIqq2yrgO8FxktLyWqRwAyaE=",
   "_location": "/iobroker.viessmann-tcp",
   "_phantomChildren": {},
   "_requested": {
@@ -92,5 +92,5 @@
   "scripts": {
     "test": "node node_modules/mocha/bin/mocha"
   },
-  "version": "0.1.0"
+  "version": "0.2.0"
 }
