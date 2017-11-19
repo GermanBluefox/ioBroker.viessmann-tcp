@@ -39,7 +39,7 @@
       "port":                 8888,
       "host":                 "127.0.0.1",
       "reconnectTimeout":     30000,
-      "protocol":     		  'P300'
+      "protocol":     		  "P300"
     },
     "objects": [],
     "instanceObjects": []
