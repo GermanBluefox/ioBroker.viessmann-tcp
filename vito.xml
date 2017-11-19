@@ -1,304 +1,987 @@
 <vito>
+	<devices>
+		<device ID="20CB" name="VitoO1" protocol="P300" />
+	</devices>
 	<commands>
-		<command name='getTempA' protocmd='getaddr'>
-			<addr>5525</addr>
-			<len>2</len>
-			<unit>UT</unit>
-			<description>Ermittle die Aussentemperatur in Grad C</description>
+
+		<!-- BETRIEBSARTEN -->
+
+		<command name='getVitoBetriebsart' protocmd='getaddr'>
+			<addr>2323</addr>
+			<len>1</len>
+			<unit>BA</unit>
+			<description>Betriebsart</description>
 		</command>
-		<command name='getTempAg' protocmd='getaddr'>
-			<addr>5527</addr>
-			<len>2</len>
-			<unit>UT</unit>
-			<description>Ermittle die ged�mpfte Aussentemperatur in Grad C</description>
+		<command name='setVitoBetriebsart' protocmd='setaddr'>
+			<addr>2323</addr>
+			<len>1</len>
+			<unit>BA</unit>
+			<description>Setze Betriebsart</description>
 		</command>
-		<command name='getTempAbg' protocmd='getaddr'>
-			<addr>0808</addr>
-			<len>2</len>
-			<unit>UT</unit>
-			<description>Ermittle die Abgastemperatur in Grad C</description>
-		</command>
-		<command name='getTemp17A' protocmd='getaddr'>
-			<addr>080A</addr>
-			<len>2</len>
-			<unit>UT</unit>
-			<description>Ermittle die Temperatur 17A in Grad C</description>
-		</command>
-		<command name='getPumpeStatusSp' protocmd='getaddr'>
-			<addr>0845</addr>
+
+		<!-- PARTYBETRIEB -->
+
+		<command name='getVitoBetriebParty' protocmd='getaddr'>
+			<addr>2303</addr>
 			<len>1</len>
 			<unit>RT</unit>
-			<description>Ermittle den Status der Speicherladepumpe</description>
+			<description>Partybetrieb</description>
 		</command>
-		<command name='getTempWWsoll' protocmd='getaddr'>
-			<addr>0814</addr>
+		<command name='setVitoBetriebParty' protocmd='setaddr'>
+			<addr>2303</addr>
+			<len>1</len>
+			<unit>RT</unit>
+			<description>Setze Partybetrieb</description>
+		</command>
+		<command name='getVitoTempPartySoll' protocmd='getaddr'>
+			<addr>2308</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Solltemperatur Partybetrieb in °C</description>
+		</command>
+		<command name='setVitoTempPartySoll' protocmd='setaddr'>
+			<addr>2308</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Setze Warmwassersolltemperatur Partybetrieb in °C</description>
+		</command>
+
+		<!-- FERIENBETRIEB -->
+
+		<command name='getVitoBetriebFerien' protocmd='getaddr'>
+			<addr>2535</addr>
+			<len>1</len>
+			<unit>BFB</unit>
+			<description>Ferienbetrieb</description>
+		</command>
+		<command name='getVitoFerienBeginn' protocmd='getaddr'>
+			<addr>2309</addr>
+			<len>8</len>
+			<unit>TI</unit>
+			<description>Abreisetag</description>
+		</command>
+		<command name='setVitoFerienBeginn' protocmd='setaddr'>
+			<addr>2309</addr>
+			<len>8</len>
+			<unit>TI</unit>
+			<description>Setze Abreisetag</description>
+		</command>
+		<command name='getVitoFerienEnde' protocmd='getaddr'>
+			<addr>2311</addr>
+			<len>8</len>
+			<unit>TI</unit>
+			<description>Rückreisetag</description>
+		</command>
+		<command name='setVitoFerienEnde' protocmd='setaddr'>
+			<addr>2311</addr>
+			<len>8</len>
+			<unit>TI</unit>
+			<description>Setze Rückreisetag</description>
+		</command>
+		
+		<!-- SPARBETRIEB -->
+
+		<command name='getVitoBetriebSpar' protocmd='getaddr'>
+			<addr>2302</addr>
+			<len>1</len>
+			<unit>RT</unit>
+			<description>Sparbetrieb</description>
+		</command>
+		<command name='setVitoBetriebSpar' protocmd='setaddr'>
+			<addr>2302</addr>
+			<len>1</len>
+			<unit>RT</unit>
+			<description>Setze Sparbetrieb</description>
+		</command>
+
+		<!-- SOLLTEMPERATUREN -->
+
+		<command name='getVitoTempRaumNorSoll' protocmd='getaddr'>
+			<addr>2306</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Raumsolltemperatur Normal in °C</description>
+		</command>
+		<command name='setVitoTempRaumNorSoll' protocmd='setaddr'>
+			<addr>2306</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Setze Raumsolltemperatur Normal in °C</description>
+		</command>
+		<command name='getVitoTempRaumRedSoll' protocmd='getaddr'>
+			<addr>2307</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Raumsolltemperatur reduzierter Betrieb in °C</description>
+		</command>
+		<command name='setVitoTempRaumRedSoll' protocmd='setaddr'>
+			<addr>2307</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Setze Raumsolltemperatur reduzierter Betrieb in °C</description>
+		</command>
+		
+		<!-- AUSSENTEMPERATUR -->
+
+		<command name='getVitoTempAussen' protocmd='getaddr'>
+			<addr>0800</addr>
 			<len>2</len>
-			<unit>UT</unit>
-			<description>Ermittle die Warmwassersolltemperatur in Grad C</description>
+			<unit>TD</unit>
+			<description>Außentemperatur in °C</description>
 		</command>
-		<command name='getTempWW' protocmd='getaddr'>
+		
+		<!-- WARMWASSER -->
+
+		<command name='getVitoTempWWIst' protocmd='getaddr'>
+			<addr>0804</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Warmwassertemperatur in °C</description>
+		</command>
+		<command name='getVitoTempWWSoll' protocmd='getaddr'>
+			<addr>6300</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Warmwassersolltemperatur in °C</description>
+		</command>
+		<command name='setVitoTempWWSoll' protocmd='setaddr'>
+			<addr>6300</addr>
+			<len>1</len>
+			<unit>T1U</unit>
+			<description>Setze Warmwassersolltemperatur in °C</description>
+		</command>
+		<command name='getVitoTempSpeicher' protocmd='getaddr'>
 			<addr>0812</addr>
 			<len>2</len>
-			<unit>UT</unit>
-			<description>Ermittle die Warmwassertemperatur in Grad C</description>
+			<unit>TD</unit>
+			<description>Speichertemperatur in °C</description>
 		</command>
-		<command name='getTempKsoll' protocmd='getaddr'>
-			<addr>5502</addr>
+		<command name='getVitoTempWWAuslauf' protocmd='getaddr'>
+			<addr>0814</addr>
 			<len>2</len>
-			<unit>UT</unit>
-			<error>05 05</error>
-			<description>Ermittle die Kesselsolltemperatur in Grad C</description>
+			<unit>TD</unit>
+			<description>Auslauftemperatur Warmwasser in °C</description>
 		</command>
-		<command name='getTempKist' protocmd='getaddr'>
-			<addr>0810</addr>
-			<len>2</len>
-			<unit>UT</unit>
-			<error>05 05</error>
-			<description>Ermittle die Kesseltemperatur in Grad C</description>
-		</command>
-		<command name='getBrennerStatus' protocmd='getaddr'>
-			<addr>551E</addr>
+		<command name='getVitoStatusPumpeSpeicher' protocmd='getaddr'>
+			<addr>6513</addr>
 			<len>1</len>
 			<unit>RT</unit>
-			<description>Ermittle den Brennerstatus</description>
+			<description>Status Speicherladepumpe</description>
 		</command>
-		<command name='getBrennerStarts' protocmd='getaddr'>
+
+		<!-- KESSEL / BRENNER -->
+
+		<command name='getVitoTempKesselIst' protocmd='getaddr'>
+			<addr>0810</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Vorlauf- bzw. Kesseltemperatur in °C</description>
+		</command>
+		<command name='getVitoTempKesselSoll' protocmd='getaddr'>
+			<addr>555A</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Kesselsolltemperatur in °C</description>
+		</command>
+		<command name='getVitoStatusFlamme' protocmd='getaddr'>
+			<addr>55DE</addr>
+			<len>1</len>
+			<unit>FLS</unit>
+			<description>Flammenstatus</description>
+		</command>
+		<command name='getVitoLaufzeitBrenner' protocmd='getaddr'>
+			<addr>08A7</addr>
+			<len>4</len>
+			<unit>HS</unit>
+			<description>Brenner Betriebsstunden</description>
+		</command>
+		<command name='getVitoStartsBrenner' protocmd='getaddr'>
 			<addr>088A</addr>
+			<len>4</len>
+			<unit>CO</unit>
+			<description>Brennerstarts</description>
+		</command>
+		<command name='getVitoStatusPumpeIntern' protocmd='getaddr'>
+			<addr>7660</addr>
+			<len>1</len>
+			<unit>IPS</unit>
+			<description>Status interne Pumpe</description>
+		</command>
+		<command name='getVitoDrehzahlPumpeIntern' protocmd='getaddr'>
+			<addr>7663</addr>
+			<len>1</len>
+			<unit>CO</unit>
+			<description>Drehzahl interne Pumpe</description>
+		</command>
+
+		<!-- HEIZKENNLINIE -->
+
+		<command name='getVitoKennlinieNeigung' protocmd='getaddr'>
+			<addr>27D3</addr>
+			<len>1</len>
+			<unit>UN</unit>
+			<description>Neigung Heizkennlinie</description>
+		</command>
+		<command name='setVitoKennlinieNeigung' protocmd='setaddr'>
+			<addr>27D3</addr>
+			<len>1</len>
+			<unit>UN</unit>
+			<description>Setze Neigung Heizkennlinie</description>
+		</command>
+		<command name='getVitoKennlinieNiveau' protocmd='getaddr'>
+			<addr>27D4</addr>
+			<len>1</len>
+			<unit>ST</unit>
+			<description>Niveau Heizkennlinie</description>
+		</command>
+		<command name='setVitoKennlinieNiveau' protocmd='setaddr'>
+			<addr>27D4</addr>
+			<len>1</len>
+			<unit>ST</unit>
+			<description>Setze Niveau Heizkennlinie</description>
+		</command>
+
+		<!-- HEIZKREIS -->
+
+		<command name='getVitoBetriebsartHK' protocmd='getaddr'>
+			<addr>2500</addr>
+			<len>1</len>
+			<unit>ABA</unit>
+			<description>Aktuelle Betriebsart des Heizkreises</description>
+		</command>
+		<command name='getVitoTempVLSoll' protocmd='getaddr'>
+			<addr>2544</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Vorlaufsolltemperatur in °C</description>
+		</command>
+		<command name='getVitoTempRLIst' protocmd='getaddr'>
+			<addr>0808</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Rücklauftemperatur in °C</description>
+		</command>
+		<command name='getVitoStatusPumpeHK' protocmd='getaddr'>
+			<addr>2906</addr>
+			<len>1</len>
+			<unit>RT</unit>
+			<description>Status Heizkreispumpe</description>
+		</command>
+		<command name='getVitoTempRaumHK' protocmd='getaddr'>
+			<addr>0896</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Heizkreis Raumtemperatur in °C</description>
+		</command>
+		<command name='getVitoStatusPumpeZirku' protocmd='getaddr'>
+			<addr>6515</addr>
+			<len>1</len>
+			<unit>RT</unit>
+			<description>Status Zirkulationspumpe</description>
+		</command>
+
+		<!-- SOLAR -->
+
+		<command name='getVitoTempSolarkol' protocmd='getaddr'>
+			<addr>6564</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Solar-Kollektortemperatur in °C</description>
+		</command>
+		<command name='getVitoTempSolarspeicher' protocmd='getaddr'>
+			<addr>6566</addr>
+			<len>2</len>
+			<unit>TD</unit>
+			<description>Solar-Speichertemperatur in °C</description>
+		</command>
+		<command name='getVitoLaufzeitSolar' protocmd='getaddr'>
+			<addr>6568</addr>
 			<len>2</len>
 			<unit>CO</unit>
-			<description>Ermittle die Brennerstarts</description>
+			<description>Solar-Betriebsstunden</description>
 		</command>
-		<command name='getBrennerStunden1' protocmd='getaddr'>
-			<addr>0886</addr>
+		<command name='getVitoLeistungSolar' protocmd='getaddr'>
+			<addr>6560</addr>
 			<len>4</len>
-			<unit>CS</unit>
-			<description>Ermittle die Brennerstunden Stufe 1</description>
+			<unit>CO</unit>
+			<description>Solar-Wärmeenergie</description>
 		</command>
-		<command name='getBrennerStunden2' protocmd='getaddr'>
-			<addr>08AB</addr>
+		<command name='getVitoErtragTagSolar' protocmd='getaddr'>
+			<addr>CF30</addr>
 			<len>4</len>
-			<unit>CS</unit>
-			<description>Ermittle die Brennerstunden Stufe 2</description>
+			<unit>CO</unit>
+			<description>Solarertrag aktueller Tag</description>
 		</command>
-		<command name='getSystemTime' protocmd='getaddr'>
+
+		<!-- VENTILE -->
+		
+		<command name='getVitoStatusUmschaltventil' protocmd='getaddr'>
+			<addr>0A10</addr>
+			<len>1</len>
+			<unit>USV</unit>
+			<description>Status Umschaltventil Warmwasser/Heizen</description>
+		</command>
+
+		<!-- HEIZZEITEN -->
+
+		<command name='getVitoTimerMoHeizen' protocmd='getaddr'>
+			<addr>2000</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Montag</description>
+		</command>
+		<command name='setVitoTimerMoHeizen' protocmd='setaddr'>
+			<addr>2000</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Montag</description>
+		</command>
+		<command name='getVitoTimerDiHeizen' protocmd='getaddr'>
+			<addr>2008</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Dienstag</description>
+		</command>
+		<command name='setVitoTimerDiHeizen' protocmd='setaddr'>
+			<addr>2008</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Dienstag</description>
+		</command>
+		<command name='getVitoTimerMiHeizen' protocmd='getaddr'>
+			<addr>2010</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Mittwoch</description>
+		</command>
+		<command name='setVitoTimerMiHeizen' protocmd='setaddr'>
+			<addr>2010</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Mittwoch</description>
+		</command>
+		<command name='getVitoTimerDoHeizen' protocmd='getaddr'>
+			<addr>2018</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Donnerstag</description>
+		</command>
+		<command name='setVitoTimerDoHeizen' protocmd='setaddr'>
+			<addr>2018</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Donnerstag</description>
+		</command>
+		<command name='getVitoTimerFrHeizen' protocmd='getaddr'>
+			<addr>2020</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Freitag</description>
+		</command>
+		<command name='setVitoTimerFrHeizen' protocmd='setaddr'>
+			<addr>2020</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Freitag</description>
+		</command>
+		<command name='getVitoTimerSaHeizen' protocmd='getaddr'>
+			<addr>2028</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Samstag</description>
+		</command>
+		<command name='setVitoTimerSaHeizen' protocmd='setaddr'>
+			<addr>2028</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Samstag</description>
+		</command>
+		<command name='getVitoTimerSoHeizen' protocmd='getaddr'>
+			<addr>2030</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Sonntag</description>
+		</command>
+		<command name='setVitoTimerSoHeizen' protocmd='setaddr'>
+			<addr>2030</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Sonntag</description>
+		</command>
+
+		<!-- WARMWASSERZEITEN -->
+
+		<command name='getVitoTimerMoWW' protocmd='getaddr'>
+			<addr>2100</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Warmwasser Montag</description>
+		</command>
+		<command name='setVitoTimerMoWW' protocmd='setaddr'>
+			<addr>2100</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Warmwasser Montag</description>
+		</command>
+		<command name='getVitoTimerDiWW' protocmd='getaddr'>
+			<addr>2108</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Warmwasser Dienstag</description>
+		</command>
+		<command name='setVitoTimerDiWW' protocmd='setaddr'>
+			<addr>2108</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Warmwasser Dienstag</description>
+		</command>
+		<command name='getVitoTimerMiWW' protocmd='getaddr'>
+			<addr>2110</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Warmwasser Mittwoch</description>
+		</command>
+		<command name='setVitoTimerMiWW' protocmd='setaddr'>
+			<addr>2110</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Warmwasser Mittwoch</description>
+		</command>
+		<command name='getVitoTimerDoWW' protocmd='getaddr'>
+			<addr>2118</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Warmwasser Donnerstag</description>
+		</command>
+		<command name='setVitoTimerDoWW' protocmd='setaddr'>
+			<addr>2118</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Warmwasser Donnerstag</description>
+		</command>
+		<command name='getVitoTimerFrWW' protocmd='getaddr'>
+			<addr>2120</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Warmwasser Freitag</description>
+		</command>
+		<command name='setVitoTimerFrWW' protocmd='setaddr'>
+			<addr>2120</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Warmwasser Freitag</description>
+		</command>
+		<command name='getVitoTimerSaWW' protocmd='getaddr'>
+			<addr>2128</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Warmwasser Samstag</description>
+		</command>
+		<command name='setVitoTimerSaWW' protocmd='setaddr'>
+			<addr>2128</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Warmwasser Samstag</description>
+		</command>
+		<command name='getVitoTimerSoWW' protocmd='getaddr'>
+			<addr>2130</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Warmwasser Sonntag</description>
+		</command>
+		<command name='setVitoTimerSoWW' protocmd='setaddr'>
+			<addr>2130</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Warmwasser Sonntag</description>
+		</command>
+
+		<!-- ZIRKULATIONSZEITEN -->
+
+		<command name='getVitoTimerMoPumpeZirku' protocmd='getaddr'>
+			<addr>2200</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Zirkulationspumpe Montag</description>
+		</command>
+		<command name='setVitoTimerMoPumpeZirku' protocmd='setaddr'>
+			<addr>2200</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Zirkulationspumpe Montag</description>
+		</command>
+		<command name='getVitoTimerDiPumpeZirku' protocmd='getaddr'>
+			<addr>2208</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Zirkulationspumpe Dienstag</description>
+		</command>
+		<command name='setVitoTimerDiPumpeZirku' protocmd='setaddr'>
+			<addr>2208</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Zirkulationspumpe Dienstag</description>
+		</command>
+		<command name='getVitoTimerMiPumpeZirku' protocmd='getaddr'>
+			<addr>2210</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Zirkulationspumpe Mittwoch</description>
+		</command>
+		<command name='setVitoTimerMiPumpeZirku' protocmd='setaddr'>
+			<addr>2210</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Zirkulationspumpe Mittwoch</description>
+		</command>
+		<command name='getVitoTimerDoPumpeZirku' protocmd='getaddr'>
+			<addr>2218</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Zirkulationspumpe Donnerstag</description>
+		</command>
+		<command name='setVitoTimerDoPumpeZirku' protocmd='setaddr'>
+			<addr>2218</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Zirkulationspumpe Donnerstag</description>
+		</command>
+		<command name='getVitoTimerFrPumpeZirku' protocmd='getaddr'>
+			<addr>2220</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Zirkulationspumpe Freitag</description>
+		</command>
+		<command name='setVitoTimerFrPumpeZirku' protocmd='setaddr'>
+			<addr>2220</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Zirkulationspumpe Freitag</description>
+		</command>
+		<command name='getVitoTimerSaPumpeZirku' protocmd='getaddr'>
+			<addr>2228</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Zirkulationspumpe Samstag</description>
+		</command>
+		<command name='setVitoTimerSaPumpeZirku' protocmd='setaddr'>
+			<addr>2228</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Zirkulationspumpe Samstag</description>
+		</command>
+		<command name='getVitoTimerSoPumpeZirku' protocmd='getaddr'>
+			<addr>2230</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Schaltzeit Zirkulationspumpe Sonntag</description>
+		</command>
+		<command name='setVitoTimerSoPumpeZirku' protocmd='setaddr'>
+			<addr>2230</addr>
+			<len>8</len>
+			<unit>CT</unit>
+			<description>Setze Schaltzeit Zirkulationspumpe Sonntag</description>
+		</command>
+
+		<!-- STOERUNG -->
+		
+		<command name='getVitoStatusStoerung' protocmd='getaddr'>
+			<addr>0A82</addr>
+			<len>1</len>
+			<unit>ES</unit>
+			<description>Status Störung</description>
+		</command>
+		<command name='getVitoStoerung1' protocmd='getaddr'>
+			<addr>7507</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 1</description>
+		</command>
+		<command name='getVitoStoerung2' protocmd='getaddr'>
+			<addr>7510</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 2</description>
+		</command>
+		<command name='getVitoStoerung3' protocmd='getaddr'>
+			<addr>7519</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 3</description>
+		</command>
+		<command name='getVitoStoerung4' protocmd='getaddr'>
+			<addr>7522</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 4</description>
+		</command>
+		<command name='getVitoStoerung5' protocmd='getaddr'>
+			<addr>752B</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 5</description>
+		</command>
+		<command name='getVitoStoerung6' protocmd='getaddr'>
+			<addr>7534</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 6</description>
+		</command>
+		<command name='getVitoStoerung7' protocmd='getaddr'>
+			<addr>753D</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 7</description>
+		</command>
+		<command name='getVitoStoerung8' protocmd='getaddr'>
+			<addr>7546</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 8</description>
+		</command>
+		<command name='getVitoStoerung9' protocmd='getaddr'>
+			<addr>754F</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 9</description>
+		</command>
+		<command name='getVitoStoerung10' protocmd='getaddr'>
+			<addr>7558</addr>
+			<len>9</len>
+			<unit>EM</unit>
+			<description>Störung Meldung 10</description>
+		</command>
+
+		<!-- SYSTEMZEIT -->
+
+		<command name='getVitoSystemzeit' protocmd='getaddr'>
 			<addr>088E</addr>
 			<len>8</len>
 			<unit>TI</unit>
-			<description>Ermittle Systemzeit</description>
+			<description>Systemzeit</description>
+		</command>
+		<command name='setVitoSystemzeit' protocmd='setaddr'>
+			<addr>088E</addr>
+			<len>8</len>
+			<unit>TI</unit>
+			<description>Setze Systemzeit</description>
+		</command>
+
+		<!-- GERAETEDATEN -->
+
+		<command name='getVitoAnlagenschema' protocmd='getaddr'>
+			<addr>7700</addr>
+			<len>1</len>
+			<unit>ST</unit>
+			<description>Anlagenschema</description>
 		</command>
 	</commands>
 	<units>
-		<unit name='Temperatur'>
-			<abbrev>UT</abbrev>
-			<calc get='V/10' set='V*10'/>
-			<type>short</type>
-			<entity>Degrees Celsius</entity>
+		<unit name="Aktuelle Betriebsart">
+			<abbrev>ABA</abbrev>
+			<type>enum</type>
+			<enum bytes="00" text="Abschaltbetr. (Dauernd)"/>
+			<enum bytes="01" text="Red. Betrieb (Schaltuhr)"/>
+			<enum bytes="02" text="Normalbetrieb (Schaltuhr)"/>
+			<enum bytes="03" text="Normalbetrieb (Dauernd)"/>
+			<enum text="?"/>
 		</unit>
-		<unit name='Neigung'>
-			<abbrev>UN</abbrev>
-			<calc get='V/10' set='V*10'/>
-			<type>short</type>
-			<entity></entity>
-		</unit>	
-		<unit name='Temperatur 1Byte'>
-			<abbrev>UT1</abbrev>
-			<calc get='V/2' set='V*2'/>
-			<type>char</type>
-			<entity>Degrees Celsius</entity>
+		<unit name="Betriebsart">
+			<abbrev>BA</abbrev>
+			<type>enum</type>
+			<enum bytes="00" text="Abschaltbetrieb"/>
+			<enum bytes="01" text="Nur Warmwasser"/>
+			<enum bytes="02" text="Heizen und Warmwasser"/>
+			<enum bytes="03" text="Dauernd red. Betrieb"/>
+			<enum bytes="04" text="Dauernd Normalbetrieb"/>
+			<enum text="?"/>
 		</unit>
-		<unit name='Temperatur 1Byte unsigned'>
-			<abbrev>UT1U</abbrev>
-			<calc get='V/2' set='V*2'/>
+		<unit name="Ferienbetrieb">
+			<abbrev>BFB</abbrev>
 			<type>uchar</type>
-			<entity>Degrees Celsius</entity>
-        </unit>
-		<unit name='Temperatur 1Byte ganzzahlig'>
-			<abbrev>UTI</abbrev>
-			<calc get='V' set='V'/>
-			<type>uchar</type>
-			<entity>Degrees Celsius</entity>
-        </unit>
-		<unit name='Status'>
-			<abbrev>ST</abbrev>
-			<calc get='V' set='V'/>
-			<type>char</type>
-			<entity></entity>
+			<icalc get="(B7 & (0x01<<BP))>> BP"/>
+			<enum bytes="00" text="inaktiv"/>
+			<enum bytes="01" text="aktiv"/>
+			<enum text="?"/>
 		</unit>
-		<unit name='Counter'>
+		<unit name="Bitstatus">
+			<abbrev>BST</abbrev>
+			<type>uchar</type>
+			<icalc get="(B0 & (0x01<<BP))>> BP"/>
+			<enum bytes="00" text="0"/>
+			<enum bytes="01" text="1"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="Anzahl">
 			<abbrev>CO</abbrev>
-			<calc get='V' set='V'/>
+			<calc get="V" set="V"/>
 			<type>int</type>
-			<entity></entity>
+			<entity/>
 		</unit>
-		<unit name='Prozent'>
-			<abbrev>PR</abbrev>
-			<calc get='V/2' set='V*2'/>
-			<type>short</type>
-			<entity>%</entity>
+		<unit name="Anzahl Liter">
+			<abbrev>COL</abbrev>
+			<calc get="V/1000" set="V*1000"/>
+			<type>int</type>
+			<entity>Liter</entity>
 		</unit>
-		<unit name='Prozent 1 Byte ganzzahlig'>
-			<abbrev>PR1</abbrev>
-			<calc get='V' set='V'/>
-			<type>uchar</type>
-			<entity>%</entity>
-		</unit>
-		<unit name='CounterS'>
-			<abbrev>CS</abbrev>
-			<calc get='V/3600' set='V*3600'/>
-			<type>uint</type>
-			<entity>Stunden</entity>
-		</unit>
-		<unit name='CycleTime'>
+		<unit name="Schaltzeit">
 			<abbrev>CT</abbrev>
 			<type>cycletime</type>
 		</unit>
-		<unit name='ReturnStatus'>
+		<unit name="Systemkennung">
+			<abbrev>DT</abbrev>
+			<type>enum</type>
+			<enum bytes="20 CB 00 2B 00 00 01 14" text="VScotHO1, ID: 20CB, Protokoll: KW2/P300"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="Fehlermeldung">
+			<abbrev>EM</abbrev>
+			<type>errstate</type>
+			<enum bytes="00" text="Regelbetrieb (kein Fehler)"/>
+			<enum bytes="0F" text="Wartung (für Reset Codieradresse 24 auf 0 stellen)"/>
+			<enum bytes="10" text="Kurzschluss Außentemperatursensor"/>
+			<enum bytes="18" text="Unterbrechung Außentemperatursensor"/>
+			<enum bytes="20" text="Kurzschluss Vorlauftemperatursensor"/>
+			<enum bytes="21" text="Kurzschluss Rücklauftemperatursensor"/>
+			<enum bytes="28" text="Unterbrechung Außentemperatursensor"/>
+			<enum bytes="29" text="Unterbrechung Rücklauftemperatursensor"/>
+			<enum bytes="30" text="Kurzschluss Kesseltemperatursensor"/>
+			<enum bytes="38" text="Unterbrechung Kesseltemperatursensor"/>
+			<enum bytes="40" text="Kurzschluss Vorlauftemperatursensor M2"/>
+			<enum bytes="42" text="Unterbrechung Vorlauftemperatursensor M2"/>
+			<enum bytes="50" text="Kurzschluss Speichertemperatursensor"/>
+			<enum bytes="58" text="Unterbrechung Speichertemperatursensor"/>
+			<enum bytes="92" text="Solar: Kurzschluss Kollektortemperatursensor"/>
+			<enum bytes="93" text="Solar: Kurzschluss Sensor S3"/>
+			<enum bytes="94" text="Solar: Kurzschluss Speichertemperatursensor"/>
+			<enum bytes="9A" text="Solar: Unterbrechung Kollektortemperatursensor"/>
+			<enum bytes="9B" text="Solar: Unterbrechung Sensor S3"/>
+			<enum bytes="9C" text="Solar: Unterbrechung Speichertemperatursensor"/>
+			<enum bytes="9F" text="Solar: Fehlermeldung Solarteil (siehe Solarregler)"/>
+			<enum bytes="A7" text="Bedienteil defekt"/>
+			<enum bytes="B0" text="Kurzschluss Abgastemperatursensor"/>
+			<enum bytes="B1" text="Kommunikationsfehler Bedieneinheit"/>
+			<enum bytes="B4" text="Interner Fehler (Elektronik)"/>
+			<enum bytes="B5" text="Interner Fehler (Elektronik)"/>
+			<enum bytes="B6" text="Ungültige Hardwarekennung (Elektronik)"/>
+			<enum bytes="B7" text="Interner Fehler (Kesselkodierstecker)"/>
+			<enum bytes="B8" text="Unterbrechung Abgastemperatursensor"/>
+			<enum bytes="B9" text="Interner Fehler (Dateneingabe wiederholen)"/>
+			<enum bytes="BA" text="Kommunikationsfehler Erweiterungssatz für Mischerkreis M2"/>
+			<enum bytes="BC" text="Kommunikationsfehler Fernbedienung Vitorol, Heizkreis M1"/>
+			<enum bytes="BD" text="Kommunikationsfehler Fernbedienung Vitorol, Heizkreis M2"/>
+			<enum bytes="BE" text="Falsche Codierung Fernbedienung Vitorol"/>
+			<enum bytes="C1" text="Externe Sicherheitseinrichtung (Kessel kühlt aus)"/>
+			<enum bytes="C2" text="Kommunikationsfehler Solarregelung"/>
+			<enum bytes="C5" text="Kommunikationsfehler drehzahlgeregelte Heizkreispumpe, Heizkreis M1"/>
+			<enum bytes="C6" text="Kommunikationsfehler drehzahlgeregelte Heizkreispumpe, Heizkreis M2"/>
+			<enum bytes="C7" text="Falsche Codierung der Heizkreispumpe"/>
+			<enum bytes="C9" text="Störmeldeeingang am Schaltmodul-V aktiv"/>
+			<enum bytes="CD" text="Kommunikationsfehler Vitocom 100 (KM-BUS)"/>
+			<enum bytes="CE" text="Kommunikationsfehler Schaltmodul-V"/>
+			<enum bytes="CF" text="Kommunikationsfehler LON Modul"/>
+			<enum bytes="D1" text="Brennerstörung"/>
+			<enum bytes="D4" text="Sicherheitstemperaturbegrenzer hat ausgelöst oder Störmeldemodul nicht richtig gesteckt"/>
+			<enum bytes="DA" text="Kurzschluss Raumtemperatursensor, Heizkreis M1"/>
+			<enum bytes="DB" text="Kurzschluss Raumtemperatursensor, Heizkreis M2"/>
+			<enum bytes="DD" text="Unterbrechung Raumtemperatursensor, Heizkreis M1"/>
+			<enum bytes="DE" text="Unterbrechung Raumtemperatursensor, Heizkreis M2"/>
+			<enum bytes="E4" text="Fehler Versorgungsspannung"/>
+			<enum bytes="E5" text="Interner Fehler (Ionisationselektrode)"/>
+			<enum bytes="E6" text="Abgas- / Zuluftsystem verstopft"/>
+			<enum bytes="F0" text="Interner Fehler (Regelung tauschen)"/>
+			<enum bytes="F1" text="Abgastemperaturbegrenzer ausgelöst"/>
+			<enum bytes="F2" text="Temperaturbegrenzer ausgelöst"/>
+			<enum bytes="F3" text="Flammensigal beim Brennerstart bereits vorhanden"/>
+			<enum bytes="F4" text="Flammensigal nicht vorhanden"/>
+			<enum bytes="F7" text="Differenzdrucksensor defekt"/>
+			<enum bytes="F8" text="Brennstoffventil schließt zu spät"/>
+			<enum bytes="F9" text="Gebläsedrehzahl beim Brennerstart zu niedrig"/>
+			<enum bytes="FA" text="Gebläsestillstand nicht erreicht"/>
+			<enum bytes="FD" text="Fehler Gasfeurungsautomat"/>
+			<enum bytes="FE" text="Starkes Störfeld (EMV) in der Nähe oder Elektronik defekt"/>
+			<enum bytes="FF" text="Starkes Störfeld (EMV) in der Nähe oder interner Fehler"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="Fehlerstatus">
+			<abbrev>ES</abbrev>
+			<type>enum</type>
+			<enum bytes="00" text="kein Fehler"/>
+			<enum bytes="01" text="FEHLERMELDUNG"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="FehlermeldungGWG">
+			<abbrev>ESG</abbrev>
+			<type>enum</type>
+			<enum bytes="00" text="Keine Störung"/>
+			<enum bytes="02" text="Fehler Sicherheitskette"/>
+			<enum bytes="04" text="Brennerstörung 04"/>
+			<enum bytes="05" text="Brennerstörung 05"/>
+			<enum bytes="07" text="Brennerstörung 07"/>
+			<enum bytes="08" text="Brennerstörung 09"/>
+			<enum bytes="08" text="Brennerstörung 09"/>
+			<enum bytes="0A" text="Brennerstörung 10"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="Flammenstatus">
+			<abbrev>FLS</abbrev>
+			<type>enum</type>
+			<enum bytes="00" text="aus"/>
+			<enum bytes="0B" text="an"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="HKP Pumpentyp">
+			<abbrev>HKT</abbrev>
+			<type>uchar</type>
+			<icalc get="(B0 & (0x01<<BP))>> BP"/>
+			<enum bytes="00" text="stufig"/>
+			<enum bytes="01" text="drehzahlgeregelt"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="Laufzeit Stunden">
+			<abbrev>HS</abbrev>
+			<calc get="V/3600" set="V*3600"/>
+			<type>uint</type>
+			<entity>Stunden</entity>
+		</unit>
+		<unit name="StatusPumpeIntern">
+			<abbrev>IPS</abbrev>
+			<type>enum</type>
+			<enum bytes="00" text="aus"/>
+			<enum bytes="01" text="an"/>
+			<enum bytes="02" text="?"/>
+			<enum bytes="03" text="aus"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="Prozent">
+			<abbrev>PC</abbrev>
+			<calc get="V" set="V"/>
+			<type>uchar</type>
+			<entity>%</entity>
+		</unit>
+		<unit name="Prozent">
+			<abbrev>PC1</abbrev>
+			<calc get="V/2" set="V*2"/>
+			<type>short</type>
+			<entity>%</entity>
+		</unit>
+		<unit name="Prozent">
+			<abbrev>PC2</abbrev>
+			<calc get="V/10" set="V*10"/>
+			<type>uchar</type>
+			<entity>%</entity>
+		</unit>
+		<unit name="ReturnStatus">
 			<abbrev>RT</abbrev>
 			<type>enum</type>
-			<enum bytes='00' text='0'/>
-			<enum bytes='01' text='1'/>
-			<enum text='NOT OK'/>
+			<enum bytes="00" text="aus"/>
+			<enum bytes="01" text="an"/>
+			<enum text="?"/>
 		</unit>
-		<unit name='BetriebsArt'>
-			<abbrev>BA</abbrev>
-			<type>enum</type>
-			<enum bytes='00' text='Abschaltbetrieb'/>
-			<enum bytes='01' text='Warmwasser'/>
-			<enum bytes='02' text='Heizen und Warmwasser'/>
-			<enum bytes='03' text='3'/>
-			<enum bytes='04' text='dauernd reduziert'/>
-			<enum bytes='05' text='dauernd normal'/>
-			<enum bytes='06' text='normal Abschalt'/>
-			<enum bytes='07' text='nur Kuehlen'/>
-			<enum text='UNKNOWN'/>
-		</unit>	   
-		<unit name='SetReturnStatus'>
+		<unit name="Sachnummer">
+			<abbrev>SN</abbrev>
+			<type>uint</type>
+			<icalc get="((((((((((((B0-48)*10)+(B1-48))*10)+(B2-48))*10)+(B3-48))*10)+(B4-48))*10)+(B5-48))*10)+B6-48"/>
+		</unit>
+		<unit name="Quittung Status">
 			<abbrev>SR</abbrev>
 			<type>enum</type>
-			<enum bytes='00' text='OK'/>
-			<enum bytes='05' text='SYNC (NOT OK)'/>
-			<enum text='NOT OK'/>
-        </unit>
-        <unit name='SystemTime'>
+			<enum bytes="00" text="OK"/>
+			<enum bytes="05" text="SYNC (NOT OK)"/>
+			<enum text="?"/>
+		</unit>
+		<unit name="Status">
+			<abbrev>ST</abbrev>
+			<calc get="V" set="V"/>
+			<type>char</type>
+			<entity/>
+		</unit>
+		<unit name="Systemzeit">
 			<abbrev>TI</abbrev>
 			<type>systime</type>
 		</unit>
-		<unit name='ErrorState'>
-			<abbrev>ES</abbrev>
-			<type>errstate</type>
-			<enum bytes='00' text='Control mode (no error)'/>
-			<enum bytes='0F' text='Maintenance (reset coding for 24 to 0)'/>
-			<enum bytes='10' text='Outside temperature sensor short circuit'/>
-			<enum bytes='18' text='Lead break outside temperature sensor'/>
-			<enum bytes='20' text='Short-circuit flow temperature sensor'/>
-			<enum bytes='21' text='Short-circuit temperature sensor rewind'/>
-			<enum bytes='28' text='Interruption outside temperature sensor'/>
-			<enum bytes='29' text='Interruption rewind temperature sensor'/>
-			<enum bytes='30' text='Burner blocked check boiler water temp sensor'/>
-			<enum bytes='38' text='Burner blocked lead break temperature sensor'/>
-			<enum bytes='40' text='Short-circuit flow temperature sensor M2'/>
-			<enum bytes='42' text='Interruption flow temperature sensor M2'/>
-			<enum bytes='50' text='No DHW heating, check cylinder temperature sensor'/>
-			<enum bytes='51' text='No DHW heating, short circuit outlet temperature sensor'/>
-			<enum bytes='52' text='Burner blocked, short circuit flow sensor'/>
-			<enum bytes='58' text='No DHW heating, lead break outlet temperature sensor'/>
-			<enum bytes='92' text='Solar: Kurzschluss Kollektortemperatursensor'/>
-			<enum bytes='93' text='Solar: Kurzschluss Sensor S3'/>
-			<enum bytes='94' text='Solar: Kurzschluss Speichertemperatursensor'/>
-			<enum bytes='9A' text='Solar: Unterbrechung Kollektortemperatursensor'/>
-			<enum bytes='9B' text='Solar: Unterbrechung Sensor S3'/>
-			<enum bytes='9C' text='Solar: Unterbrechung Speichertemperatursensor'/>
-			<enum bytes='9F' text='Solar: Fehlermeldung Solarteil (siehe Solarregler)'/>
-			<enum bytes='A7' text='Control unit faulty'/>
-			<enum bytes='B0' text='Burner blocked, Short exhaust temperature sensor'/>
-			<enum bytes='B1' text='Communication error Control Unit'/>
-			<enum bytes='B4' text='Internal error (Electronics)'/>
-			<enum bytes='B5' text='Internal error (Electronics)'/>
-			<enum bytes='B6' text='Invalid hardware ID (Electronics)'/>
-			<enum bytes='B7' text='Internal error (boiler encodable connector)'/>
-			<enum bytes='B8' text='Burner blocked, lead break exhaust temperature sensor'/>
-			<enum bytes='B9' text='Repeat internal error (data input)'/>
-			<enum bytes='BA' text='Communication error extension kit for mixer circuit M2'/>
-			<enum bytes='BC' text='Remote communication error Vitorol, heating M1'/>
-			<enum bytes='BD' text='Remote communication error Vitorol, heating M2'/>
-			<enum bytes='BE' text='Incorrect coding remote control Vitorol'/>
-			<enum bytes='C1' text='External safety device (boiler cools off)'/>
-			<enum bytes='C2' text='Kommunikationsfehler Solarregelung'/>
-			<enum bytes='C5' text='Communication error variable speed heating circuit pump, heating circuit M1'/>
-			<enum bytes='C6' text='Communication error variable speed heating circuit pump, heating circuit M2'/>
-			<enum bytes='C7' text='Incorrect coding of the heating circuit pump'/>
-			<enum bytes='C9' text='Fault message on the control module V active'/>
-			<enum bytes='CD' text='communication error Vitocom 100 (KM-BUS)'/>
-			<enum bytes='CE' text='communication error Schaltmodul-V'/>
-			<enum bytes='CF' text='communication error LON Modul'/>
-			<enum bytes='D1' text='Burner Fault'/>
-			<enum bytes='D4' text='Safety breaker tripped or fault message is not inserted properly'/>
-			<enum bytes='DA' text='Short circuit temperature sensor, heating circuit M1'/>
-			<enum bytes='DB' text='Short circuit temperature sensor, heating circuit M2'/>
-			<enum bytes='DD' text='Interruption temperature sensor, heating circuit M1'/>
-			<enum bytes='DE' text='Interruption temperature sensor, heating circuit M2'/>
-			<enum bytes='E3' text='Burner in fault state, fault in safety chain'/>
-			<enum bytes='E4' text='Error supply voltage'/>
-			<enum bytes='E5' text='Internal error (check ionization electrode)'/>
-			<enum bytes='E6' text='Exhaust / supply air clogged'/>
-			<enum bytes='F0' text='(Exchange control) internal error'/>
-			<enum bytes='F1' text='Max exhaust gas temperature exceeded'/>
-			<enum bytes='F2' text='Triggered temperature limiter'/>
-			<enum bytes='F3' text='Burner fault, flame signal present at burner start'/>
-			<enum bytes='F4' text='No Flame signal'/>
-			<enum bytes='F7' text='Differenzdrucksensor defekt'/>
-			<enum bytes='F8' text='Fuel valve closes too late'/>
-			<enum bytes='F9' text='Fan speed too low during burner start'/>
-			<enum bytes='FA' text='Fan not at stand-still'/>
-			<enum bytes='FC' text='Electric Fan control unit faulty'/>
-			<enum bytes='FD' text='Burner blocked, burner control unit faulty'/>
-			<enum bytes='FE' text='Starkes Stoerfeld (EMV) in der Naehe oder Elektronik defekt'/>
-			<enum bytes='FF' text='Strong interference (EMC) field exists'/>
-			<enum text='UNKNOWN'/>
-		</unit>
-		<unit name='DeviceType'>
-			<abbrev>DT</abbrev>
+		<unit name="Umschaltventil Stellung">
+			<abbrev>USV</abbrev>
 			<type>enum</type>
-			<enum bytes='20 53 01 2B' text='V200WB2 ID=2053 Protokoll:GWG_VBEM'/>
-	        <enum bytes='20 98' text='V200KW2 ID=2098 Protokoll:KW'/>
-	        <enum bytes='20 C2' text='VDensHO1 ID=20C2 Protokoll:KW,P300'/>
-			<enum bytes='20 4D' text='V200-S ID=204D Protokoll:KW,P300'/>
-			<enum text='UNKNOWN'/>
+			<enum bytes="00" text="UNDEFINIERT"/>
+			<enum bytes="01" text="Heizung"/>
+			<enum bytes="02" text="Mittelstellung"/>
+			<enum bytes="03" text="Warmwasser"/>
+			<enum text="?"/>
 		</unit>
-		<unit name='Brenner Stunden'>
-			<abbrev>BH</abbrev>
+		<unit name="Temperatur">
+			<abbrev>T1U</abbrev>
+			<calc get="V" set="V"/>
 			<type>uchar</type>
-			<calc get='(B1 * 100)+B0'/>
-			<entity>h</entity>
+			<entity>°C</entity>
 		</unit>
-		<unit name='ErrorStateGWG'>
-			<abbrev>ESG</abbrev>
-			<type>enum</type>
-			<enum bytes='00' text='Keine Stoerung'/>
-			<enum bytes='02' text='Fehler Sicherheitskette'/>
-			<enum bytes='04' text='Brennerstoerung 04'/>
-			<enum bytes='05' text='Brennerstoerung 05'/>
-			<enum bytes='07' text='Brennerstoerung 07'/>
-			<enum bytes='08' text='Brennerstoerung 09'/>
-			<enum bytes='08' text='Brennerstoerung 09'/>
-			<enum bytes='0A' text='Brennerstoerung 10'/>
-			<enum  text='UNKNOWN'/>
+		<unit name="Temperatur">
+			<abbrev>TD</abbrev>
+			<calc get="V/10" set="V*10"/>
+			<type>short</type>
+			<entity>°C</entity>
 		</unit>
-		<unit name='Bitstatus'>
-			<abbrev>BST</abbrev>
+		<unit name="Temperatur">
+			<abbrev>T1S</abbrev>
+			<calc get="V/2" set="V*2"/>
 			<type>uchar</type>
-			<icalc get="(B0 &amp; (0x01&lt;&lt;BP))&gt;&gt; BP"/>
-			<enum bytes='00' text='0'/>
-			<enum bytes='01' text='1'/>
-			<enum text='UNKNOWN'/>
-        </unit>
-		<unit name='HKP Pumpentyp'>
-			<abbrev>HKT</abbrev>
-			<type>uchar</type>
-			<icalc get="(B0 &amp; (0x01&lt;&lt;BP))&gt;&gt; BP"/>
-			<enum bytes='00' text='stufig'/>
-			<enum bytes='01' text='drehzahlgeregelt'/>
-			<enum text='UNKNOWN'/>
+			<entity>°C</entity>
+		</unit>
+		<unit name="Neigung">
+			<abbrev>UN</abbrev>
+			<calc get="V/10" set="V*10"/>
+			<type>short</type>
+			<entity/>
+		</unit>
+		<unit name="Volumenstrom">
+			<abbrev>VS</abbrev>
+			<calc get="V" set="V"/>
+			<type>ushort</type>
+			<entity>Liter</entity>
 		</unit>
 	</units>
+	<protocols>
+		<protocol name="P300">
+			<pid>41</pid>
+			<macros>
+				<macro name="GETADDR">
+					<command>SEND 00 01</command>
+				</macro>
+				<macro name="SETADDR">
+					<command>SEND 00 02</command>
+				</macro>
+			</macros>
+			<commands>
+				<command name="getaddr">
+					<send>GETADDR $addr $hexlen;RECV $len $unit</send>
+				</command>
+				<command name="setaddr">
+					<send>SETADDR $addr $hexlen;SEND BYTES $unit;RECV 1 SR</send>
+				</command>
+			</commands>
+		</protocol>
+		<protocol name="KW2">
+			<macros>
+				<macro name="SYNC">
+					<command>SEND 04;WAIT 05</command>
+				</macro>
+				<macro name="GETADDR">
+					<command>SEND 01 F7</command>
+				</macro>
+				<macro name="SETADDR">
+					<command>SEND 01 F4</command>
+				</macro>
+			</macros>
+			<commands>
+				<command name="getaddr">
+					<retry>3</retry>
+					<recvTimeout>4000</recvTimeout>
+					<send>SYNC;GETADDR $addr $hexlen;RECV $len $unit</send>
+				</command>
+				<command name="setaddr">
+					<send>SYNC;SETADDR $addr $hexlen;SEND BYTES $unit;RECV 1 SR</send>
+				</command>
+			</commands>
+		</protocol>
+	</protocols>
 </vito>

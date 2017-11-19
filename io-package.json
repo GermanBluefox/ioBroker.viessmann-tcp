@@ -1,7 +1,7 @@
 {
     "common": {
         "name":                     "viessmann-tcp",
-        "version":                  "0.2.0",
+        "version":                  "0.3.0",
         "title":                    "Viessmann TCP Connect (eg. ESP8266)",
         "desc":                     {
            "en": "FHEM Adapter",
@@ -16,6 +16,10 @@
 		  "0.2.0" :{
             "en": "First working Version",
             "de": "Erste funktionierende Version"
+          },
+		  "0.3.0" :{
+            "en": "Change to extended vito.xml",
+            "de": "Wechsel zu einer erweiterten vito.xml Datei."
           }
         },
         "platform":                 "Javascript/Node.js",
@@ -34,7 +38,8 @@
     "native": {
       "port":                 8888,
       "host":                 "127.0.0.1",
-      "reconnectTimeout":     30000
+      "reconnectTimeout":     30000,
+      "protocol":     		  'P300'
     },
     "objects": [],
     "instanceObjects": []

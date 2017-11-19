@@ -16,8 +16,9 @@ var fUnit = null;
 var adapter = utils.adapter('viessmann-tcp');
 
 // Datei einlesen
-fs.readFile(__dirname + '/vito.xml', function (err, data) {
-    parser.parseString(data, function (err, result) {
+fs.readFile(__dirname + '/vito.xml', 'utf8', function (err, data) {
+	data = data.replace(/[\n\r]/g, '\\n').replace(/&/g,"&amp;").replace(/-/g,"&#45;");
+    parser.parseString(data, function (err, result) {		
         oVito = result.vito;
     });
 });
@@ -61,8 +62,8 @@ adapter.on('message', function (obj) {
 
 // is called when databases are connected and adapter received configuration.
 // start here!
-adapter.on('ready', function () {	
-    main.main();
+adapter.on('ready', function () {
+	main.main();
 });
 
 var main = { 
@@ -105,7 +106,10 @@ var main = {
 			
 					main.sendRequest(hex);
 					main.idx++;
-				}
+				} else {
+					main.idx++;
+					main.loop();
+				}					
 				// Maybe many more eg. setaddr?
 				
 			}
@@ -154,6 +158,7 @@ var main = {
 		adapter.config.host = adapter.config.host || '127.0.0.1';
 		adapter.config.port = parseInt(adapter.config.port, 10) || 8888;
 		adapter.config.refresh = parseInt(adapter.config.refresh, 10) || 60;
+		adapter.config.protocol = adapter.config.protocol || 'P300';
 		
 		fUnit = new unit({
 			oVito: oVito
@@ -213,18 +218,18 @@ var main = {
 						}
 						else
 						{
-							adapter.log.debug('Address: ' + cmd + ' Array not found.');
-							adapter.log.debug(JSON.stringify(main.commandArr));
+							adapter.log.warn('Address: ' + cmd + ' Array not found.');
+							adapter.log.warn(JSON.stringify(main.commandArr));
 						}
 					}
 					else
 					{
-						adapter.log.debug('No Address found in answer: ' + answer);
+						adapter.log.warn('No Address found in answer: ' + answer);
 					}
 				}
 				if(data == '\x05') // initialer Aufruf
 				{
-					adapter.log.debug('Viessmann Serial Connect');
+					adapter.log.info('Viessmann Serial Connect');
 					main.sendRequest('160000');
 					main.ViessmannInit = true;
 					
@@ -246,18 +251,20 @@ var main = {
 				}
 				if(data == '\x15') // Fehler in der Anfrage
 				{
-					adapter.log.debug('Fehler in der Anfrage - Viessmann konnte Anfrage nicht verarbeiten.');
+					var cidx = main.commandAssoc[main.idx-1];					
+					adapter.log.info('Fehler in der Anfrage für Adresse '+ main.commandArr[ cidx.toUpperCase() ].xmlObj.addr[0] +' - Viessmann konnte Anfrage nicht verarbeiten.');
+					main.loop();
 				}
 			}
 		});
 		
 		main.client.on('error', function (data) {
-			adapter.log.debug('Fehler beim Verbindungsaufbau: ' + data);
+			adapter.log.error('Fehler beim Verbindungsaufbau: ' + data);
 		});
 		
 		main.client.on('end', function () {
 			if (ESPConnected) {
-				adapter.log.debug('Disconnected');
+				adapter.log.info('Disconnected');
 				main.connected = false;
 				adapter.setState('info.connection', false, true);
 			}
@@ -266,7 +273,7 @@ var main = {
 		main.client.on('close', function () {
 			if (ESPConnected) {
 				main.client.write('\x04');
-				adapter.log.debug('Disconnected');
+				adapter.log.info('Disconnected');
 				main.ESPConnected = false;
 				main.ViessmannConnected = false;
 				adapter.setState('info.connection', false, true);
